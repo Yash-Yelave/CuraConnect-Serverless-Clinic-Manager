@@ -1,6 +1,6 @@
 // --- CONFIGURATION ---
 // IMPORTANT: Replace this URL with your actual Google Apps Script Web App URL.
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-Cwv0hHHwfpsQ_D3rvrWJBcorghdelc-FNOlMTJSPhTELwCKvZHDu0TFyvYDrT-U4hA/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzP9wMoX78tniSJT_w8UexVfpu0-6OJFjrP-YvYFBAi3smPtcQKsLRSuZRC0Z2VqS2SBA/exec";
 
 // --- LANGUAGE & TRANSLATIONS ---
 const translations = {
