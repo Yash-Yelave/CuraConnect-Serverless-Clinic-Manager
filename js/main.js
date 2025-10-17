@@ -1,6 +1,6 @@
 // --- CONFIGURATION ---
-// IMPORTANT: Replace this URL with your actual Google Apps Script Web App URL after deployment.
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWD6rDkkyyhFERVLbz4RDhCpctmCTllf3tSwS5XhhoOdyTCmEK-lGqmZchXAe_uHbe2w/exec"; // Example: "https://script.google.com/macros/s/AKfycbzP9wMoX78tniSJT_w8UexVfpu0-6OJFjrP-YvYFBAi3smPtcQKsLRSuZRC0Z2VqS2SBA/exec";
+// IMPORTANT: This URL should be your actual Google Apps Script Web App URL.
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEzxhMrcUPGA3cbyWGuraN-b1IYTZgx7b_ZxeosCbfbumliNe0sLAYmDEP29nCJnAH/exec";
 
 // --- LANGUAGE & TRANSLATIONS ---
 const translations = {
