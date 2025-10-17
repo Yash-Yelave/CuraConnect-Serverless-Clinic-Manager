@@ -44,11 +44,13 @@ const patientIdElement = document.getElementById('patient-id');
 const tokenNumberElement = document.getElementById('token-number');
 const langEnButton = document.getElementById('lang-en');
 const langMrButton = document.getElementById('lang-mr');
+const resetButton = document.getElementById('reset-button');
 
 // --- EVENT LISTENER ---
 form.addEventListener('submit', handleFormSubmit);
 langEnButton.addEventListener('click', () => setLanguage('en'));
 langMrButton.addEventListener('click', () => setLanguage('mr'));
+resetButton.addEventListener('click', resetFormView);
 
 /**
  * Sets the application language and updates the UI.
@@ -154,5 +156,24 @@ function displaySuccessScreen(patientId, tokenNumber) {
         setTimeout(() => {
             successMessageView.style.opacity = '1';
         }, 50); // Small delay to ensure the element is rendered before fading in
+    }, 500); // Match the CSS transition duration
+}
+
+/**
+ * Resets the view from the success screen back to the registration form.
+ */
+function resetFormView() {
+    // Reset the form fields
+    form.reset();
+
+    // Animate the transition back
+    successMessageView.style.opacity = '0';
+    setTimeout(() => {
+        successMessageView.classList.add('hidden');
+        registrationFormView.classList.remove('hidden');
+        registrationFormView.style.opacity = '0';
+        setTimeout(() => {
+            registrationFormView.style.opacity = '1';
+        }, 50); // Small delay for fade-in
     }, 500); // Match the CSS transition duration
 }
