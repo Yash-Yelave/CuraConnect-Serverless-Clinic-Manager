@@ -64,6 +64,9 @@ resetButton.addEventListener('click', resetFormView);
  */
 function setLanguage(lang) {
     currentLang = lang;
+    // Update the document's primary language for accessibility
+    document.documentElement.lang = lang;
+
     const elements = document.querySelectorAll('[data-lang]');
     elements.forEach(el => {
         const key = el.getAttribute('data-lang');
