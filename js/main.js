@@ -1,6 +1,6 @@
 // --- CONFIGURATION ---
 // IMPORTANT: This URL should be your actual Google Apps Script Web App URL. Make sure it's the one from your LATEST deployment.
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEzxhMrcUPGA3cbyWGuraN-b1IYTZgx7b_ZxeosCbfbumliNe0sLAYmDEP29nCJnAH/exec"; // This URL should match the one you copied from your Apps Script deployment.
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwSmcUqbcfX-i82tUagbhbloMME9iMgfXV7TXxNDCwPD2OeCnVJeKaA6ahaLcheTu_ENw/exec"; // This URL should match the one you copied from your Apps Script deployment.
 
 // --- LANGUAGE & TRANSLATIONS ---
 const translations = {
