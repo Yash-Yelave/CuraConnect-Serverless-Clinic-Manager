@@ -16,7 +16,9 @@ const translations = {
         success_subheading: "Please show this screen at the reception.",
         label_patient_id: "Patient ID:",
         label_token: "Today's Token:",
-        alert_error: "An error occurred. Please try again."
+        alert_error: "An error occurred. Please try again.",
+        alert_invalid_phone: "Please enter a valid phone number.",
+        alert_invalid_age: "Please enter a valid age (between 1 and 120)."
     },
     mr: {
         welcome_heading: "क्लिनिकमध्ये आपले स्वागत आहे",
@@ -30,7 +32,9 @@ const translations = {
         success_subheading: "कृपया ही स्क्रीन रिसेप्शनला दाखवा.",
         label_patient_id: "रुग्ण आयडी:",
         label_token: "आजचे टोकन:",
-        alert_error: "एक त्रुटी आली. कृपया पुन्हा प्रयत्न करा."
+        alert_error: "एक त्रुटी आली. कृपया पुन्हा प्रयत्न करा.",
+        alert_invalid_phone: "कृपया वैध फोन नंबर प्रविष्ट करा.",
+        alert_invalid_age: "कृपया वैध वय प्रविष्ट करा (1 ते 120 दरम्यान)."
     }
 };
 let currentLang = 'en';
@@ -97,14 +101,14 @@ async function handleFormSubmit(e) {
     // --- Client-Side Validation ---
     const phoneRegex = /^\+?[0-9\s-()]{7,15}$/; // Basic regex for phone numbers
     if (!phoneRegex.test(data.phone)) {
-        alert('Please enter a valid phone number.');
+        alert(translations[currentLang].alert_invalid_phone);
         setLoadingState(false);
         return; // Stop the submission
     }
 
     const ageNum = parseInt(data.age, 10);
     if (isNaN(ageNum) || ageNum <= 0 || ageNum > 120) {
-        alert('Please enter a valid age (between 1 and 120).');
+        alert(translations[currentLang].alert_invalid_age);
         setLoadingState(false);
         return; // Stop the submission
     }
