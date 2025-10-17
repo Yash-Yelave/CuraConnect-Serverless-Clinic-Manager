@@ -129,8 +129,8 @@ async function handleFormSubmit(e) {
         const result = await response.json();
 
         // --- 4. Handle Successful Response ---
-        if (result.status === 'success') {
-            displaySuccessScreen(result.data.patientId, result.data.token);
+        if (result.result === 'success') { // Changed 'status' to 'result'
+            displaySuccessScreen(result.patientId, result.tokenNumber); // Adjusted to match backend response
         } else {
             // Handle application-specific errors returned from the script
             throw new Error(result.message || 'An unknown error occurred.');
