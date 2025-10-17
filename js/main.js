@@ -18,7 +18,8 @@ const translations = {
         label_token: "Today's Token:",
         alert_error: "An error occurred. Please try again.",
         alert_invalid_phone: "Please enter a valid phone number.",
-        alert_invalid_age: "Please enter a valid age (between 1 and 120)."
+        alert_invalid_age: "Please enter a valid age (between 1 and 120).",
+        button_reset: "Register Another Patient"
     },
     mr: {
         welcome_heading: "क्लिनिकमध्ये आपले स्वागत आहे",
@@ -34,7 +35,8 @@ const translations = {
         label_token: "आजचे टोकन:",
         alert_error: "एक त्रुटी आली. कृपया पुन्हा प्रयत्न करा.",
         alert_invalid_phone: "कृपया वैध फोन नंबर प्रविष्ट करा.",
-        alert_invalid_age: "कृपया वैध वय प्रविष्ट करा (1 ते 120 दरम्यान)."
+        alert_invalid_age: "कृपया वैध वय प्रविष्ट करा (1 ते 120 दरम्यान).",
+        button_reset: "दुसऱ्या रुग्णाची नोंदणी करा"
     }
 };
 let currentLang = 'en';
