@@ -89,9 +89,9 @@ async function handleFormSubmit(e) {
     // --- 2. Capture Form Data ---
     const formData = new FormData(form);
     const data = {
-        name: formData.get('name'),
-        phone: formData.get('phone'),
-        age: formData.get('age'),
+        name: formData.get('name').trim(),
+        phone: formData.get('phone').trim(),
+        age: formData.get('age').trim(),
     };
 
     try {
@@ -122,8 +122,19 @@ async function handleFormSubmit(e) {
 
     } catch (error) {
         // --- 5. Handle Failed Response/Error ---
-        console.error('Submission Error:', error);
-        alert(translations[currentLang].alert_error);
+        console.error("Submission Error:", error);
+
+        // Provide a more detailed error message for easier debugging
+        let errorMessage = translations[currentLang].alert_error; // Default message
+        if (error.message.includes("Failed to fetch")) {
+            errorMessage += "\n\nDetails: Network error or CORS issue. Please check the browser console (F12) for more information and verify your Apps Script deployment permissions.";
+        } else if (error instanceof SyntaxError) {
+            errorMessage += "\n\nDetails: The server response was not valid JSON. This often means an error occurred on the server-side. Check the Apps Script project's 'Executions' log for errors.";
+        } else {
+            errorMessage += `\n\nDetails: ${error.message}`;
+        }
+
+        alert(errorMessage);
         setLoadingState(false); // Re-enable the form
     }
 }
