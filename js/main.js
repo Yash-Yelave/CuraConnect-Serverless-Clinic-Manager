@@ -94,6 +94,22 @@ async function handleFormSubmit(e) {
         age: formData.get('age').trim(),
     };
 
+    // --- Client-Side Validation ---
+    const phoneRegex = /^\+?[0-9\s-()]{7,15}$/; // Basic regex for phone numbers
+    if (!phoneRegex.test(data.phone)) {
+        alert('Please enter a valid phone number.');
+        setLoadingState(false);
+        return; // Stop the submission
+    }
+
+    const ageNum = parseInt(data.age, 10);
+    if (isNaN(ageNum) || ageNum <= 0 || ageNum > 120) {
+        alert('Please enter a valid age (between 1 and 120).');
+        setLoadingState(false);
+        return; // Stop the submission
+    }
+    // --- End Validation ---
+
     try {
         // --- 3. Send Data to Google Apps Script ---
         const response = await fetch(SCRIPT_URL, {
@@ -188,3 +204,18 @@ function resetFormView() {
         }, 50); // Small delay for fade-in
     }, 500); // Match the CSS transition duration
 }
+
+/**
+ * Initializes the application by setting the language based on browser preference.
+ */
+function initializeApp() {
+    // Get the primary language from the browser (e.g., 'en' from 'en-US')
+    const browserLang = navigator.language.split('-')[0];
+
+    // If the browser language is Marathi ('mr'), set it, otherwise default to English.
+    const initialLang = browserLang === 'mr' ? 'mr' : 'en';
+    setLanguage(initialLang);
+}
+
+// Run the initialization function when the page content has fully loaded.
+document.addEventListener('DOMContentLoaded', initializeApp);
