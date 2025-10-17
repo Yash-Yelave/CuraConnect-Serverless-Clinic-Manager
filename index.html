@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinic Registration</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen font-sans">
+
+    <div class="relative w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md m-4">
+
+        <!-- Language Switcher -->
+        <div class="absolute top-4 right-4 text-sm">
+            <button id="lang-en" class="font-semibold text-blue-600 underline">English</button> |
+            <button id="lang-mr" class="text-gray-600 hover:underline">मराठी</button>
+        </div>
+
+        <!-- Registration Form View (Visible by default) -->
+        <div id="registration-form">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-gray-800" data-lang="welcome_heading">Welcome to the Clinic</h1>
+                <p class="mt-2 text-gray-600" data-lang="welcome_subheading">Please fill this form to get your token.</p>
+            </div>
+
+            <form id="clinic-form" class="mt-8 space-y-6">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700" data-lang="label_name">Full Name</label>
+                    <input type="text" id="name" name="name" required
+                           class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700" data-lang="label_phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required
+                           class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+
+                <div>
+                    <label for="age" class="block text-sm font-medium text-gray-700" data-lang="label_age">Age</label>
+                    <input type="number" id="age" name="age" required
+                           class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+
+                <div>
+                    <button type="submit" id="submit-button" data-lang="button_get_token"
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed">
+                        Get My Token
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Success Message View (Hidden by default) -->
+        <div id="success-message" class="hidden">
+            <div class="text-center">
+                <svg class="mx-auto h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h1 class="mt-4 text-3xl font-bold text-gray-800" data-lang="success_heading">Registration Successful!</h1>
+                <p class="mt-2 text-gray-600" data-lang="success_subheading">Please show this screen at the reception.</p>
+            </div>
+
+            <div class="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-lg space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-700 font-medium" data-lang="label_patient_id">Patient ID:</span>
+                    <strong id="patient-id" class="text-gray-900"></strong>
+                </div>
+                <div class="text-center border-t border-gray-200 pt-4">
+                    <span class="block text-gray-700 font-medium" data-lang="label_token">Today's Token:</span>
+                    <h2 class="text-5xl font-extrabold text-blue-600 mt-2">
+                        <strong id="token-number"></strong>
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main JavaScript File -->
+    <script src="js/main.js"></script>
+</body>
+</html>
