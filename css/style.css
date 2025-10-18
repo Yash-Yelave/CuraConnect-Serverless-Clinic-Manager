@@ -1,4 +1,0 @@
-/* A little extra style for a smoother transition */
-#registration-form, #success-message {
-    transition: opacity 0.5s ease-in-out;
-}
