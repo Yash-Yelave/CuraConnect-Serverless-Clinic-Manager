@@ -1,92 +1,172 @@
+<!-- This is the new index.html file with language options -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clinic Registration</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen font-sans">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-    <div class="relative w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md m-4">
-
+    <div class="w-full max-w-sm">
         <!-- Language Switcher -->
-        <div class="absolute top-4 right-4 text-sm">
-            <button id="lang-en" class="font-semibold text-blue-600 underline">English</button> |
-            <button id="lang-mr" class="text-gray-600 hover:underline">मराठी</button>
+        <div class="flex justify-center mb-4 bg-white p-1 rounded-lg shadow-sm">
+            <button id="lang-en" class="px-4 py-1 text-sm font-semibold text-white bg-blue-600 rounded-md focus:outline-none" onclick="changeLanguage('en')">English</button>
+            <button id="lang-mr" class="px-4 py-1 text-sm font-semibold text-gray-600 bg-transparent rounded-md focus:outline-none" onclick="changeLanguage('mr')">मराठी</button>
         </div>
 
-        <!-- Registration Form View (Visible by default) -->
-        <div id="registration-form">
-            <div class="text-center">
-                <h1 class="text-3xl font-bold text-gray-800" data-lang="welcome_heading">Welcome to the Clinic</h1>
-                <p class="mt-2 text-gray-600" data-lang="welcome_subheading">Please fill this form to get your token.</p>
-            </div>
-
-            <form id="clinic-form" class="mt-8 space-y-6">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700" data-lang="label_name">Full Name</label>
-                    <input type="text" id="name" name="name" required
-                           class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+        <!-- Registration Form View -->
+        <div id="registration-form" class="bg-white p-8 rounded-lg shadow-md">
+            <h2 data-lang-key="welcome" class="text-2xl font-bold text-center text-gray-800 mb-4">Welcome to the Clinic</h2>
+            <p data-lang-key="instruction" class="text-center text-gray-500 mb-6">Please fill this form to get your token.</p>
+            
+            <form id="patient-form">
+                <div class="mb-4">
+                    <label for="name" data-lang-key="fullName" class="block text-gray-700 font-semibold mb-2">Full Name</label>
+                    <input type="text" id="name" name="name" class="w-full px-3 py-2 border rounded-lg" required>
                 </div>
-
-                <div>
-                    <label for="phone" class="block text-sm font-medium text-gray-700" data-lang="label_phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" required
-                           class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <div class="mb-4">
+                    <label for="phone" data-lang-key="phone" class="block text-gray-700 font-semibold mb-2">Phone Number</label>
+                    <input 
+                        type="tel" 
+                        id="phone" 
+                        name="phone" 
+                        class="w-full px-3 py-2 border rounded-lg" 
+                        required 
+                        maxlength="10" 
+                        pattern="[0-9]{10}" 
+                        title="Please enter a 10-digit phone number"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                        >
                 </div>
-
-                <div>
-                    <label for="age" class="block text-sm font-medium text-gray-700" data-lang="label_age">Age</label>
-                    <input type="number" id="age" name="age" required
-                           class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <div class="mb-6">
+                    <label for="age" data-lang-key="age" class="block text-gray-700 font-semibold mb-2">Age</label>
+                    <input type="number" id="age" name="age" class="w-full px-3 py-2 border rounded-lg" required>
                 </div>
-
-                <div>
-                    <button type="submit" id="submit-button" data-lang="button_get_token"
-                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed">
-                        Get My Token
-                    </button>
-                </div>
+                <button type="submit" id="submit-button" data-lang-key="getToken" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
+                    Get My Token
+                </button>
             </form>
         </div>
 
-        <!-- Success Message View (Hidden by default) -->
-        <div id="success-message" class="hidden">
-            <div class="text-center">
-                <svg class="mx-auto h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h1 class="mt-4 text-3xl font-bold text-gray-800" data-lang="success_heading">Registration Successful!</h1>
-                <p class="mt-2 text-gray-600" data-lang="success_subheading">Please show this screen at the reception.</p>
-            </div>
-
-            <div class="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-lg space-y-6 text-center">
-                <div>
-                    <span class="block text-gray-700 font-medium" data-lang="label_patient_id">Patient ID:</span>
-                    <strong id="patient-id" class="text-2xl font-semibold text-gray-900"></strong>
-                </div>
-                <div class="border-t border-gray-200 pt-6">
-                    <span class="block text-gray-700 font-medium" data-lang="label_token">Today's Token:</span>
-                    <h2 class="text-5xl font-extrabold text-blue-600 mt-2">
-                        <strong id="token-number"></strong>
-                    </h2>
-                </div>
-            </div>
-
-            <div class="mt-6 text-center">
-                <button id="reset-button"
-                        class="w-full sm:w-auto inline-flex justify-center py-2 px-6 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" data-lang="button_reset">
-                    Register Another Patient
-                </button>
+        <!-- Success Message View (Initially Hidden) -->
+        <div id="success-message" class="bg-white p-8 rounded-lg shadow-md w-full max-w-sm text-center hidden">
+            <h2 data-lang-key="successTitle" class="text-2xl font-bold text-green-600 mb-4">Registration Successful!</h2>
+            <p data-lang-key="successInstruction" class="text-gray-600 mb-6">Please show this screen at the reception.</p>
+            <div class="bg-gray-100 p-4 rounded-lg">
+                <p data-lang-key="patientIdLabel" class="text-gray-700">Patient ID:</p>
+                <p id="patient-id" class="text-xl font-bold text-gray-900 mb-4">---</p>
+                <p data-lang-key="tokenLabel" class="text-gray-700">Today's Token:</p>
+                <p id="token-number" class="text-3xl font-extrabold text-blue-600">---</p>
             </div>
         </div>
     </div>
 
-    <!-- Main JavaScript File -->
-    <script src="js/main.js"></script>
+<script>
+    // URL of our deployed Google Apps Script
+    // This is needed because we are using fetch() again
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWr27xSQ8s6fgdwCeoXduHGgf03pcY6L2mv4roE8eVi7ea0ucp9Of5_f0Z2uFiOCod6A/exec";
+
+    // --- Language Translation Logic ---
+    const translations = {
+        en: {
+            welcome: "Welcome to the Clinic",
+            instruction: "Please fill this form to get your token.",
+            fullName: "Full Name",
+            phone: "Phone Number",
+            age: "Age",
+            getToken: "Get My Token",
+            submitting: "Submitting...",
+            successTitle: "Registration Successful!",
+            successInstruction: "Please show this screen at the reception.",
+            patientIdLabel: "Patient ID:",
+            tokenLabel: "Today's Token:",
+            errorAlert: "An error occurred. Please try again."
+        },
+        mr: {
+            welcome: "क्लिनिकमध्ये आपले स्वागत आहे",
+            instruction: "कृपया टोकन मिळवण्यासाठी हा फॉर्म भरा.",
+            fullName: "पूर्ण नाव",
+            phone: "फोन नंबर",
+            age: "वय",
+            getToken: "माझे टोकन मिळवा",
+            submitting: "सबमिट करत आहे...",
+            successTitle: "नोंदणी यशस्वी झाली!",
+            successInstruction: "कृपया ही स्क्रीन रिसेप्शनवर दाखवा.",
+            patientIdLabel: "रुग्ण आयडी:",
+            tokenLabel: "आजचे टोकन:",
+            errorAlert: "एक त्रुटी आली. कृपया पुन्हा प्रयत्न करा."
+        }
+    };
+
+    let currentLanguage = 'en';
+
+    function changeLanguage(lang) {
+        currentLanguage = lang;
+        document.querySelectorAll('[data-lang-key]').forEach(elem => {
+            const key = elem.getAttribute('data-lang-key');
+            elem.innerText = translations[lang][key];
+        });
+
+        // Update button styles
+        const enButton = document.getElementById('lang-en');
+        const mrButton = document.getElementById('lang-mr');
+        if (lang === 'en') {
+            enButton.classList.add('bg-blue-600', 'text-white');
+            enButton.classList.remove('bg-transparent', 'text-gray-600');
+            mrButton.classList.add('bg-transparent', 'text-gray-600');
+            mrButton.classList.remove('bg-blue-600', 'text-white');
+        } else {
+            mrButton.classList.add('bg-blue-600', 'text-white');
+            mrButton.classList.remove('bg-transparent', 'text-gray-600');
+            enButton.classList.add('bg-transparent', 'text-gray-600');
+            enButton.classList.remove('bg-blue-600', 'text-white');
+        }
+    }
+
+    // --- Form Submission Logic (Using fetch) ---
+    const form = document.getElementById('patient-form');
+    const submitButton = document.getElementById('submit-button');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        submitButton.disabled = true;
+        submitButton.innerText = translations[currentLanguage].submitting;
+
+        const formData = {
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            age: document.getElementById('age').value
+        };
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.result === 'success') {
+                document.getElementById('patient-id').innerText = data.patientId;
+                document.getElementById('token-number').innerText = data.tokenNumber;
+                document.getElementById('registration-form').classList.add('hidden');
+                document.getElementById('success-message').classList.remove('hidden');
+            } else {
+                throw new Error(data.message || 'Unknown error');
+            }
+        })
+        .catch(error => {
+            console.error('Error!', error);
+            alert(translations[currentLanguage].errorAlert);
+            submitButton.disabled = false;
+            submitButton.innerText = translations[currentLanguage].getToken;
+        });
+    });
+
+    // Set default language on page load
+    changeLanguage('en');
+
+</script>
 </body>
 </html>
