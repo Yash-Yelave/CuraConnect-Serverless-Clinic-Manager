@@ -109,7 +109,7 @@
 <script>
     // URL of our deployed Google Apps Script
     // This is needed because we are using fetch() again
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWr27xSQ8s6fgdwCeoXduHGgf03pcY6L2mv4roE8eVi7ea0ucp9Of5_f0Z2uFiOCod6A/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw8yw0Go1E9BddsdIw5HGwJ-dxdr3s44Ttgh-Dvt-LhkkTCfpAGO35djKqcfTQchStmuA/exec";
 
     // --- Language Translation Logic ---
     const translations = {
@@ -182,7 +182,7 @@
     }
 
     // --- State Management ---
-    let isRegistrationOpen = true; // By default, the form is open
+    let isRegistrationOpen; // Will be set on page load
     const ADMIN_PASSWORD = "admin123"; // IMPORTANT: Change this in a real application
 
     // --- Form Submission Logic (Using fetch) ---
@@ -196,13 +196,14 @@
         submitButton.innerText = translations[currentLanguage].submitting;
 
         const formData = {
+            action: 'submitPatient', // Specify the action for the backend
             name: document.getElementById('name').value,
             phone: document.getElementById('phone').value,
             age: document.getElementById('age').value
         };
 
         fetch(SCRIPT_URL, {
-            method: 'POST',
+            method: 'POST', // POST is already correct
             body: JSON.stringify(formData)
         })
         .then(response => response.json())
@@ -213,7 +214,7 @@
                 document.getElementById('registration-form').classList.add('hidden');
                 document.getElementById('success-message').classList.remove('hidden');
             } else {
-                throw new Error(data.message || 'Unknown error');
+                throw new Error(data.message || 'An unknown error occurred.');
             }
         })
         .catch(error => {
@@ -261,6 +262,25 @@
     formToggle.addEventListener('change', () => {
         isRegistrationOpen = formToggle.checked;
         updateToggleUI();
+
+        // Call the backend to save the new state globally
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'setRegistrationStatus',
+                isOpen: isRegistrationOpen,
+                password: ADMIN_PASSWORD
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.result !== 'success') {
+                alert('Error updating status: ' + data.message);
+                // Optionally revert the UI change if the backend fails
+            }
+        }).catch(err => {
+            alert('Failed to communicate with the server.');
+        });
     });
 
     function updateToggleUI() {
@@ -293,11 +313,22 @@
         // Set default language
         changeLanguage('en');
 
-        // Set initial state for the admin toggle
-        updateToggleUI();
+        // Fetch the global registration status from the server
+        fetch(`${SCRIPT_URL}?action=getStatus`)
+            .then(res => res.json())
+            .then(data => {
+                isRegistrationOpen = data.isOpen;
 
-        // Set initial visibility of the registration form
-        updateFormVisibility();
+                // Now update the UI based on the fetched state
+                updateToggleUI();
+                updateFormVisibility();
+            })
+            .catch(err => {
+                console.error("Could not fetch registration status.", err);
+                // Fallback to showing the form if the server can't be reached
+                isRegistrationOpen = true;
+                updateFormVisibility();
+            });
     }
 
     // Run initialization on page load
