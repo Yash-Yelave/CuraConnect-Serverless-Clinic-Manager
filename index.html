@@ -15,8 +15,14 @@
             <button id="lang-mr" class="px-4 py-1 text-sm font-semibold text-gray-600 bg-transparent rounded-md focus:outline-none" onclick="changeLanguage('mr')">मराठी</button>
         </div>
 
+        <!-- Loading View (Initially Visible) -->
+        <div id="loading-view" class="bg-white p-8 rounded-lg shadow-md w-full max-w-sm text-center">
+            <img src="logo.png" alt="Clinic Logo" class="h-24 mx-auto mb-6">
+            <p class="text-gray-600 animate-pulse">Loading...</p>
+        </div>
+
         <!-- Registration Form View -->
-        <div id="registration-form" class="bg-white p-8 rounded-lg shadow-md">
+        <div id="registration-form" class="bg-white p-8 rounded-lg shadow-md hidden">
             <!-- Logo -->
             <div class="flex justify-center mb-6">
                 <img src="logo.png" alt="Clinic Logo" class="h-24">
@@ -230,6 +236,7 @@
     const adminDashboard = document.getElementById('admin-dashboard');
     const registrationFormView = document.getElementById('registration-form');
     const registrationClosedView = document.getElementById('registration-closed');
+    const loadingView = document.getElementById('loading-view');
     const successView = document.getElementById('success-message');
     const formToggle = document.getElementById('form-toggle');
     const adminLogoutButton = document.getElementById('admin-logout-button');
@@ -239,6 +246,7 @@
         if (password === ADMIN_PASSWORD) {
             // Hide all other views and show dashboard
             registrationFormView.classList.add('hidden');
+            loadingView.classList.add('hidden');
             registrationClosedView.classList.add('hidden');
             successView.classList.add('hidden');
             adminDashboard.classList.remove('hidden');
@@ -299,6 +307,7 @@
     }
 
     function updateFormVisibility() {
+        loadingView.classList.add('hidden'); // Ensure loading view is hidden
         if (isRegistrationOpen) {
             registrationFormView.classList.remove('hidden');
             registrationClosedView.classList.add('hidden');
