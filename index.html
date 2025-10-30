@@ -65,6 +65,11 @@
                             width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="rounded-lg">
                     </iframe>
                 </div>
+
+                <!-- Creator Credit -->
+                <div class="text-center mt-6 text-xs text-gray-500">
+                    Created by <a href="https://www.linkedin.com/in/yashyelave/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Yash Yelave</a>
+                </div>
             </form>
         </div>
 
@@ -113,9 +118,9 @@
 
 
 <script>
-    // URL of our deployed Google Apps Script
-    // This is needed because we are using fetch() again
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw8yw0Go1E9BddsdIw5HGwJ-dxdr3s44Ttgh-Dvt-LhkkTCfpAGO35djKqcfTQchStmuA/exec";
+    // IMPORTANT: This must be the URL of your deployed Google Apps Script Web App.
+    // Since your frontend is hosted separately, this URL is required.
+    const SCRIPT_URL = "%%VITE_SCRIPT_URL%%"; // Placeholder for GitHub Actions
 
     // --- Language Translation Logic ---
     const translations = {
@@ -131,6 +136,10 @@
             successInstruction: "Please show this screen at the reception.",
             patientIdLabel: "Patient ID:",
             tokenLabel: "Today's Token:",
+            invalidPassword: "The password you entered is incorrect.",
+            confirmAdminPassword: "Confirm admin password to change status:",
+            errorUpdatingStatus: "Error updating status: ",
+            failedToCommunicate: "Failed to communicate with the server.",
             errorAlert: "An error occurred. Please try again.",
             registrationClosedTitle: "Registration Closed",
             registrationClosedMsg: "New patient registration is currently closed. Please check back later.",
@@ -150,6 +159,10 @@
             successInstruction: "कृपया ही स्क्रीन रिसेप्शनवर दाखवा.",
             patientIdLabel: "रुग्ण आयडी:",
             tokenLabel: "आजचे टोकन:",
+            invalidPassword: "तुम्ही टाकलेला पासवर्ड चुकीचा आहे.",
+            confirmAdminPassword: "स्थिती बदलण्यासाठी प्रशासक पासवर्डची पुष्टी करा:",
+            errorUpdatingStatus: "स्थिती अद्यतनित करताना त्रुटी: ",
+            failedToCommunicate: "सर्व्हरशी संवाद साधण्यात अयशस्वी.",
             errorAlert: "एक त्रुटी आली. कृपया पुन्हा प्रयत्न करा.",
             registrationClosedTitle: "नोंदणी बंद आहे",
             registrationClosedMsg: "नवीन रुग्ण नोंदणी सध्या बंद आहे. कृपया नंतर पुन्हा तपासा.",
@@ -189,7 +202,7 @@
 
     // --- State Management ---
     let isRegistrationOpen; // Will be set on page load
-    const ADMIN_PASSWORD = "admin123"; // IMPORTANT: Change this in a real application
+    let loggedInAdminPassword = null; // Temporarily stores password after successful admin login
 
     // --- Form Submission Logic (Using fetch) ---
     const form = document.getElementById('patient-form');
@@ -201,33 +214,37 @@
         submitButton.disabled = true;
         submitButton.innerText = translations[currentLanguage].submitting;
 
-        const formData = {
-            action: 'submitPatient', // Specify the action for the backend
+        const patientData = {
+            action: 'submitPatient',
             name: document.getElementById('name').value,
             phone: document.getElementById('phone').value,
             age: document.getElementById('age').value
         };
 
         fetch(SCRIPT_URL, {
-            method: 'POST', // POST is already correct
-            body: JSON.stringify(formData)
+            method: 'POST',
+            body: JSON.stringify(patientData),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' } // Required for Apps Script doPost
         })
         .then(response => response.json())
         .then(data => {
-            if (data.result === 'success') {
-                document.getElementById('patient-id').innerText = data.patientId;
-                document.getElementById('token-number').innerText = data.tokenNumber;
-                document.getElementById('registration-form').classList.add('hidden');
-                document.getElementById('success-message').classList.remove('hidden');
-            } else {
-                throw new Error(data.message || 'An unknown error occurred.');
-            }
+             if (data.result === 'success') {
+                 document.getElementById('patient-id').innerText = data.patientId;
+                 document.getElementById('token-number').innerText = data.tokenNumber;
+                 document.getElementById('registration-form').classList.add('hidden');
+                 document.getElementById('success-message').classList.remove('hidden');
+             } else {
+                 // Use the server's error message if available
+                 alert(data.message || translations[currentLanguage].errorAlert);
+                 submitButton.disabled = false;
+                 submitButton.innerText = translations[currentLanguage].getToken;
+             }
         })
         .catch(error => {
-            console.error('Error!', error);
-            alert(translations[currentLanguage].errorAlert);
-            submitButton.disabled = false;
-            submitButton.innerText = translations[currentLanguage].getToken;
+             console.error('Error!', error);
+             alert(translations[currentLanguage].errorAlert);
+             submitButton.disabled = false;
+             submitButton.innerText = translations[currentLanguage].getToken;
         });
     });
 
@@ -243,16 +260,31 @@
 
     adminLoginBtn.addEventListener('click', () => {
         const password = prompt("Enter admin password:");
-        if (password === ADMIN_PASSWORD) {
-            // Hide all other views and show dashboard
-            registrationFormView.classList.add('hidden');
-            loadingView.classList.add('hidden');
-            registrationClosedView.classList.add('hidden');
-            successView.classList.add('hidden');
-            adminDashboard.classList.remove('hidden');
-            adminLoginBtn.classList.add('hidden'); // Hide login button
-        } else if (password) { // if password was entered but is wrong
-            alert("Incorrect password.");
+        if (password) { // Only proceed if the user entered something
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'validateAdmin', password: password }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.result === 'success') {
+                        // Password is correct, show the dashboard
+                        registrationFormView.classList.add('hidden');
+                        loadingView.classList.add('hidden');
+                        registrationClosedView.classList.add('hidden');
+                        successView.classList.add('hidden');
+                        adminDashboard.classList.remove('hidden');
+                        adminLoginBtn.classList.add('hidden');
+                        loggedInAdminPassword = password; // Store password for this session
+                } else {
+                    alert(translations[currentLanguage].invalidPassword);
+                }
+            })
+            .catch(err => {
+                console.error('Admin login error:', err);
+                alert(translations[currentLanguage].failedToCommunicate);
+            });
         }
     });
 
@@ -265,29 +297,41 @@
 
         // Show admin login button again
         adminLoginBtn.classList.remove('hidden');
+        loggedInAdminPassword = null; // Clear stored password on logout
     });
 
     formToggle.addEventListener('change', () => {
         isRegistrationOpen = formToggle.checked;
         updateToggleUI();
 
-        // Call the backend to save the new state globally
+        // Use the stored password. If it's not available (e.g., page refresh),
+        // this action will fail gracefully on the backend.
+        if (!loggedInAdminPassword) {
+            alert("Admin session expired. Please log out and log back in to change status.");
+            isRegistrationOpen = !isRegistrationOpen;
+            updateToggleUI();
+            return;
+        }
+
         fetch(SCRIPT_URL, {
             method: 'POST',
-            body: JSON.stringify({
-                action: 'setRegistrationStatus',
-                isOpen: isRegistrationOpen,
-                password: ADMIN_PASSWORD
-            })
+            // Use the password stored after a successful login
+            body: JSON.stringify({ action: 'setRegistrationStatus', isOpen: isRegistrationOpen, password: loggedInAdminPassword }),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
         })
         .then(res => res.json())
         .then(data => {
             if (data.result !== 'success') {
-                alert('Error updating status: ' + data.message);
-                // Optionally revert the UI change if the backend fails
+                alert(translations[currentLanguage].errorUpdatingStatus + data.message);
+                isRegistrationOpen = !isRegistrationOpen;
+                updateToggleUI();
             }
-        }).catch(err => {
-            alert('Failed to communicate with the server.');
+        })
+        .catch(err => {
+            console.error('Error updating status:', err);
+            alert(translations[currentLanguage].failedToCommunicate);
+                    isRegistrationOpen = !isRegistrationOpen;
+                    updateToggleUI();
         });
     });
 
@@ -327,13 +371,12 @@
             .then(res => res.json())
             .then(data => {
                 isRegistrationOpen = data.isOpen;
-
-                // Now update the UI based on the fetched state
                 updateToggleUI();
                 updateFormVisibility();
             })
             .catch(err => {
                 console.error("Could not fetch registration status.", err);
+                alert(translations[currentLanguage].failedToCommunicate);
                 // Fallback to showing the form if the server can't be reached
                 isRegistrationOpen = true;
                 updateFormVisibility();
@@ -343,6 +386,35 @@
     // Run initialization on page load
     document.addEventListener('DOMContentLoaded', initializePage);
 
+    // --- Client-Side Security Measures ---
+
+    // 1. Disable Right-Click (Context Menu)
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    // 2. Disable Keyboard Shortcuts for Developer Tools
+    document.addEventListener('keydown', function(e) {
+        // F12 key
+        if (e.key === 'F12') {
+            e.preventDefault();
+        }
+        // Ctrl+Shift+I (Inspect Element)
+        if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+            e.preventDefault();
+        }
+        // Ctrl+Shift+J (Console)
+        if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+            e.preventDefault();
+        }
+        // Ctrl+U (View Source)
+        if (e.ctrlKey && e.key === 'u') {
+            e.preventDefault();
+        }
+    });
+
 </script>
 </body>
 </html>
+
+<!-- push -->
